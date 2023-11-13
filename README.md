@@ -8,6 +8,14 @@ Clone this repository locally then
 cd CoolTerm_pip
 pip install .
 ```
+### Not on macOS?
+If you are installing this on Windows or Linux, you will need to comment out line 32 in `CT_connect.py` **BEFORE** you install. This line uses macOS Applescript to activate the CoolTerm window on reconnections.
+
+```python
+# comment out line below if not running on macOS
+subprocess.run(["osascript", "-e",
+                    'tell application "CoolTerm" to activate'])
+```
 
 # Usage Example
 1. Make sure you turn on "Enable Remote Control Socket" under "Scripting" in the Preferences. Otherwise, the error "Could not connect to CoolTerm" will indicate that it there is a problem communicating with CoolTerm.
@@ -16,7 +24,7 @@ pip install .
 ## Connect and Disconnect
 My main scripting requirement is to have my editor, *Sublime Text*, disconnect CoolTerm, upload code then reconnect CoolTerm. The tools I use are the following:
 
-### Discconnect
+### Disconnect
 To disconnect CoolTerm from the serial port, use `ct_disc` in your scripts.
 
 ### Connect
@@ -69,13 +77,4 @@ Save this file as *MicroPython.sublime-build* using Tools -> Build System -> New
 	]
 
 }
-```
-
-## Not on macOS?
-If you are installing this on Windows or Linux, you will need to comment out line 32 in `CT_connect.py` **BEFORE** you install. This line uses Applescript to activate the CoolTerm window on reconnections.
-
-```python
-    # comment out line below if not running on macOS
-    subprocess.run(["osascript", "-e",
-                    'tell application "CoolTerm" to activate'])
 ```

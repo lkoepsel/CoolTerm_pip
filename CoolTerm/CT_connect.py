@@ -16,6 +16,9 @@ def main():
     if count > 0:
         # Get the ID of the frontmost open window
         ID = s.GetFrontmostWindow()
+    else:
+        print(f"Unable to find a CoolTerm Window, is one open?")
+        sys.exit()
 
     # Open the serial port
 
