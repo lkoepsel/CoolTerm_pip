@@ -2,14 +2,20 @@ from setuptools import setup, find_packages
 
 setup(
     name='CoolTerm',
-    version='0.1',
+    version='0.2',
     # This tells setuptools to include any directories, and subdirectories,
     # which include an __init__.py file
     packages=find_packages(),
     install_requires=[],
+    entry_points={
+        'console_scripts': [
+            'ct_conn = CoolTerm.CT_connect:main',
+            'ct_disc = CoolTerm.CT_disconnect:main',
+        ],
+    },
     # Metadata
-    author='Your Name',
-    author_email='your.email@example.com',
+    author='Lief Koepsel',
+    author_email='lkoepsel@wellys.com',
     description='CoolTerm scripting capabilities',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',

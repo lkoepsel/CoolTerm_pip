@@ -16,70 +16,18 @@ pip install .
 ## Connect and Disconnect
 My main scripting requirement is to have my editor, *Sublime Text*, disconnect CoolTerm, upload code then reconnect CoolTerm. The tools I use are the following:
 
-### CT_disconnect
-Save this file in your prefered executable folder, mine is `~/.local/bin`, make sure it is in your PATH for Sublime Text to find it.
-```python
-#!/usr/local/bin/python3
-# Will disconnect CoolTerm from serial port
+### Discconnect
+To disconnect CoolTerm from the serial port, use `ct_disc` in your scripts.
 
-
-from CoolTerm import CoolTermSocket
-s = CoolTermSocket()
-
-# Check if there are any open windows
-count = s.WindowCount()
-
-if count > 0:
-    # Get the ID of the frontmost open window
-    ID = s.GetFrontmostWindow()
-else:
-    print(f"Unable to find a CoolTerm Window, is one open?")
-
-# Open the serial port
-if not s.Disconnect(ID):
-    print(f"Unable to disconnect CoolTerm")
-```
-
-### CT_connect
-Save this file in your prefered executable folder, mine is `~/.local/bin`, make sure it is in your PATH for Sublime Text to find it.
-```python
-#!/usr/local/bin/python3
-# Will connect CoolTerm to serial port
-
-import time
-import subprocess
-import sys
-from CoolTerm import CoolTermSocket
-s = CoolTermSocket()
-
-# Check if there are any open windows
-count = s.WindowCount()
-
-if count > 0:
-    # Get the ID of the frontmost open window
-    ID = s.GetFrontmostWindow()
-
-# Open the serial port
-
-t = 0
-while not s.Connect(ID):
-    t += 1
-    time.sleep(.1)
-    if t > 30:
-        print(f"Unable to find/connect to CoolTerm {t / 10} secs")
-        sys.exit()
-print(f"Connected {t / 10} secs")
-
-# comment out line below if not running on macOS
-subprocess.run(["osascript", "-e", 'tell application "CoolTerm" to activate'])
-```
+### Connect
+To disconnect CoolTerm from the serial port, use `ct_conn` in your scripts.
 
 ### Sublime Text (ST) Build Automation
 Save this file as *Make AVR_C.sublime-build* using Tools -> Build System -> New Build System in **ST**
 ```json
 {
 	"cmd": "make",
-	"shell_cmd": "CT_disconnect.py && make flash && CT_connect.py && osascript -e 'tell application \"CoolTerm\" to activate'",
+	"shell_cmd": "ct_disc && make flash && ct_conn",
 	"file_regex": "^(..[^:\n]*):([0-9]+):?([0-9]+)?:? (.*)$",
 	"selector": "source.makefile",
 	"keyfiles": ["Makefile", "makefile"],
@@ -88,7 +36,7 @@ Save this file as *Make AVR_C.sublime-build* using Tools -> Build System -> New 
 	[
 		{
 			"name": "Flash only",
-			"shell_cmd": "CT_disconnect.py && make flash && CT_connect.py"
+			"shell_cmd": "ct_disc && make flash && ct_conn"
 		},
 		{
 			"name": "All new",
@@ -111,14 +59,23 @@ Save this file as *MicroPython.sublime-build* using Tools -> Build System -> New
 	[
 		{
 			"name": "CoolTerm main",
-			"shell_cmd": "CT_disconnect.py && mpremote cp $file :main.py && mpremote reset && CT_connect.py"
+			"shell_cmd": "ct_disc && mpremote cp $file :main.py && mpremote reset && ct_conn"
 		},
 		{
 			"name": "CoolTerm same",
-			"shell_cmd": "CT_disconnect.py && mpremote cp $file :$file_name && mpremote reset && CT_connect.py"
+			"shell_cmd": "ct_disc && mpremote cp $file :$file_name && mpremote reset && ct_conn"
 		}
 
 	]
 
 }
+```
+
+## Not on macOS?
+If you are installing this on Windows or Linux, you will need to comment out line 32 in `CT_connect.py` **BEFORE** you install. This line uses Applescript to activate the CoolTerm window on reconnections.
+
+```python
+    # comment out line below if not running on macOS
+    subprocess.run(["osascript", "-e",
+                    'tell application "CoolTerm" to activate'])
 ```
