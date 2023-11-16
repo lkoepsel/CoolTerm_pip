@@ -8,8 +8,12 @@ Clone this repository locally then
 cd CoolTerm_pip
 pip install .
 ```
-### Not on macOS?
-If you are installing this on Windows or Linux, you will need to comment out line 32 in `CT_connect.py` **BEFORE** you install. This line uses macOS Applescript to activate the CoolTerm window on reconnections.
+### Automating focus on CoolTerm on exit
+Its desireable to move the focus from Sublime Text to CoolTerm, once the build system has completed. This will allow you to immediately begin interacting with the microcontroller using CoolTerm.
+
+Enabling this requires the following steps:
+1. In *CT_connect.py*, towards the bottom of the file, there are two sections. One is for macOS and the other is for Windows. Uncomment only the python code for **either** (not both) section based on your OS.
+2. **Windows only** In Sublime Text, there are build systems (*see below*), which use a script command *ct_conn* to reconnect CoolTerm. That command requires an argument which is the name of the configuration file being used for CoolTerm. CoolTerm using the name of the configuration file as the name of the window, and 
 
 ```python
 # comment out line below if not running on macOS

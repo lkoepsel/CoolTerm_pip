@@ -4,11 +4,19 @@
 import time
 import subprocess
 import sys
+import pygetwindow as gw
+import pyautogui
 from CoolTerm import CoolTermSocket
 
 
 def main():
     s = CoolTermSocket()
+
+    # Get a list of all visible windows
+    windows = gw.getAllTitles()
+    ct_title = sys.argv[1]
+    if ct_title is None:
+        ct_title = "Untitled"
 
     # Check if there are any open windows
     count = s.WindowCount()
@@ -31,9 +39,25 @@ def main():
             sys.exit()
     print(f"Connected {t / 10} secs")
 
-    # comment out line below if not running on macOS
-    subprocess.run(["osascript", "-e",
-                    'tell application "CoolTerm" to activate'])
+    # uncomment out line below if running on macOS, this will move focus
+    # to CoolTerm on exit
+    # subprocess.run(["osascript", "-e",
+    #                 'tell application "CoolTerm" to activate'])
+    # end macOS
+
+    # uncomment out lines below if running on Windows, this will move focus
+    # to CoolTerm on exit
+    if ct_title in windows:
+        window = gw.getWindowsWithTitle(window_title)[0]
+
+        # Activate the window
+        window.activate()
+    else:
+        print(f"Window with title '{ct_title}' not found.")
+        print(f"Windows found were:")
+        [print(f"{i} {w}") for i, w in enumerate(windows)]
+    # end Windows
+
     sys.exit()
 
 
