@@ -1,19 +1,22 @@
 #!/usr/local/bin/python3
 # Connect CoolTerm to serial port
 
-import time
+from CoolTerm import CoolTermSocket
+import pygetwindow as gw
+import pyautogui
+import re
 import subprocess
 import sys
-import pywinctl as gw
-from CoolTerm import CoolTermSocket
+import time
 
 
 def main():
     s = CoolTermSocket()
-    stc = re.compile(r'.*\.stc$')
+    stc = re.compile(r'.*.stc$')
+    sys.stdout.reconfigure(encoding='utf-8')
 
     # Get a list of all visible windows
-    windows = gw.getAllWindows()
+    windows = gw.getAllTitles()
 
     # Check if there are any open windows
     count = s.WindowCount()
@@ -45,17 +48,14 @@ def main():
     # uncomment out lines below if running on Windows, this will move focus
     # to CoolTerm on exit
     for w in windows:
-        if stc.match(w) in windows:
+        if stc.match(w):
             window = gw.getWindowsWithTitle(w)[0]
 
-        # Activate the window
-        window.activate()
-        break
+            # Activate the window
+            window.activate()
+            print(f"{w} found, CoolTerm activated")
+            break
 
-    else:
-        print(f"Window with .stc in title was not found.")
-        print(f"Windows found were: ")
-        [print(f"{i} {w}") for i, w in enumerate(windows)]
     # end Windows
 
     sys.exit()
