@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 # Connect CoolTerm to serial port and activate CoolTerm on exit
-# follow comments based on OS, be sure to comment the other
-# OS sections, as in comment out macOS if running on Window
+# Follow comments based on OS, be sure to comment the other
+# OS sections, as in comment out macOS if running on Windows
 
 import sys
 import time
@@ -25,7 +25,6 @@ def main():
 
     # Check if there are any open windows
     count = s.WindowCount()
-
     if count > 0:
         # Get the ID of the frontmost open window
         ID = s.GetFrontmostWindow()
@@ -34,7 +33,6 @@ def main():
         sys.exit()
 
     # Open the serial port
-
     t = 0
     while not s.Connect(ID):
         t += 1
@@ -44,6 +42,7 @@ def main():
             sys.exit()
     print(f"Connected {t / 10} secs")
 
+    # Move focus to CoolTerm
     # macOS uncomment next 1 line below
     subprocess.run(["osascript", "-e",
                     'tell application "CoolTerm" to activate'])

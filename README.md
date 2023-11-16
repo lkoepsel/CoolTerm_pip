@@ -1,24 +1,33 @@
 # CoolTerm package for scripting capabilities
 ## Description
-A pip-installable package to provide scripting capability for [CoolTerm](https://freeware.the-meiers.org).
+A pip-installable package to provide scripting capability for [CoolTerm](https://freeware.the-meiers.org). By installing via `pip`, one can easily use the scripting capabilities of CoolTerm via *python*.
 
 ## Install
-Clone this repository locally then 
+### Steps
 ```bash
+# clone the repository
+git clone git@github.com:lkoepsel/CoolTerm_pip.git
+# change to the directory
 cd CoolTerm_pip
+# edit CT_connect.py based on your OS (see Edits... below)
+# install software
 pip install .
 ```
-### Automating focus on CoolTerm on exit
-Its desireable to move the focus from Sublime Text to CoolTerm, once the build system has completed. This will allow you to immediately begin interacting with the microcontroller using CoolTerm.
+### Edits to move focus to *CoolTerm* on exit
+Its desireable to move the focus to *CoolTerm*, once the build system has completed. This allows you to immediately begin interacting with the microcontroller using *CoolTerm*.
 
-Enabling this requires editing *CT_connect.py*. Follow the comments as to which OS you are using. One is for macOS and the other is for Windows. Uncomment only the python code for **either (not both)** sections based on your OS. And comment out the code for the *"other"* OS, for example, comment out macOS code, if uncommenting the Windows code.
+Enabling this requires editing *CT_connect.py*. 
+1. Open *CoolTerm -> CT_connect.py* using a programming editor. 
+2. Follow the comments as to which OS you are using. One set of comments is for *macOS* and the other is for *Windows*. 
+3. Uncomment only the python code for **either (not both)** sections based on your OS. And comment out the code for the *"other"* OS, for example, comment out macOS code, if uncommenting the Windows code. 
+4. Once the edits have been made, save the file and run `pip install .` **from the *CoolTerm_pip* root directory.**
 
 # Usage Example
-1. Make sure you turn on "Enable Remote Control Socket" under "Scripting" in the Preferences. Otherwise, the error "Could not connect to CoolTerm" will indicate that it there is a problem communicating with CoolTerm.
-2. Follow the example scripts contained in the CoolTerm documentation, CoolTerm -> Scripting -> Python -> Examples
+1. **Make sure you turn on "Enable Remote Control Socket" under "Scripting" in the Preferences**. Otherwise, the error "Could not connect to CoolTerm" will indicate that it there is a problem communicating with CoolTerm.
+2. Follow the example scripts contained in the CoolTerm documentation, *CoolTerm -> Scripting -> Python -> Examples*
 
 ## Connect and Disconnect
-My main scripting requirement is to have my editor, *Sublime Text*, disconnect CoolTerm, upload code then reconnect CoolTerm. The tools I use are the following:
+My main scripting requirement is to have my editor, *Sublime Text*, disconnect CoolTerm, upload code then reconnect *CoolTerm*. The tools I use are the following:
 
 ### Disconnect
 To disconnect CoolTerm from the serial port, use `ct_disc` in your scripts.
