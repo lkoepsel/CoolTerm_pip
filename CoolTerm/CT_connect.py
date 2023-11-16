@@ -4,19 +4,16 @@
 import time
 import subprocess
 import sys
-import pygetwindow as gw
-import pyautogui
+import pywinctl as gw
 from CoolTerm import CoolTermSocket
 
 
 def main():
     s = CoolTermSocket()
+    stc = re.compile(r'.*\.stc$')
 
     # Get a list of all visible windows
-    windows = gw.getAllTitles()
-    ct_title = sys.argv[1]
-    if ct_title is None:
-        ct_title = "Untitled"
+    windows = gw.getAllWindows()
 
     # Check if there are any open windows
     count = s.WindowCount()
@@ -47,14 +44,17 @@ def main():
 
     # uncomment out lines below if running on Windows, this will move focus
     # to CoolTerm on exit
-    if ct_title in windows:
-        window = gw.getWindowsWithTitle(window_title)[0]
+    for w in windows:
+        if stc.match(w) in windows:
+            window = gw.getWindowsWithTitle(w)[0]
 
         # Activate the window
         window.activate()
+        break
+
     else:
-        print(f"Window with title '{ct_title}' not found.")
-        print(f"Windows found were:")
+        print(f"Window with .stc in title was not found.")
+        print(f"Windows found were: ")
         [print(f"{i} {w}") for i, w in enumerate(windows)]
     # end Windows
 
