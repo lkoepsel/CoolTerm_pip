@@ -1,22 +1,27 @@
 #!/usr/local/bin/python3
-# Connect CoolTerm to serial port
+# Connect CoolTerm to serial port and activate CoolTerm on exit
+# follow comments based on OS, be sure to comment the other
+# OS sections, as in comment out macOS if running on Window
 
-from CoolTerm import CoolTermSocket
-import pygetwindow as gw
-import pyautogui
-import re
-import subprocess
 import sys
 import time
+from CoolTerm import CoolTermSocket
+
+# Windows uncomment next 3
+# import pygetwindow as gw
+# import pyautogui
+# import re
+
+# macOS uncomment next 1
+import subprocess
 
 
 def main():
     s = CoolTermSocket()
-    stc = re.compile(r'.*.stc$')
-    sys.stdout.reconfigure(encoding='utf-8')
 
-    # Get a list of all visible windows
-    windows = gw.getAllTitles()
+    # Windows uncomment next 2 lines
+    # stc = re.compile(r'.*.stc$')
+    # windows = gw.getAllTitles()
 
     # Check if there are any open windows
     count = s.WindowCount()
@@ -39,23 +44,18 @@ def main():
             sys.exit()
     print(f"Connected {t / 10} secs")
 
-    # uncomment out line below if running on macOS, this will move focus
-    # to CoolTerm on exit
-    # subprocess.run(["osascript", "-e",
-    #                 'tell application "CoolTerm" to activate'])
+    # macOS uncomment next 1 line below
+    subprocess.run(["osascript", "-e",
+                    'tell application "CoolTerm" to activate'])
     # end macOS
 
-    # uncomment out lines below if running on Windows, this will move focus
-    # to CoolTerm on exit
-    for w in windows:
-        if stc.match(w):
-            window = gw.getWindowsWithTitle(w)[0]
-
-            # Activate the window
-            window.activate()
-            print(f"{w} found, CoolTerm activated")
-            break
-
+    # Windows uncomment next 6 lines
+    # for w in windows:
+    #     if stc.match(w):
+    #         window = gw.getWindowsWithTitle(w)[0]
+    #         window.activate()
+    #         print(f"{w} found, CoolTerm activated")
+    #         break
     # end Windows
 
     sys.exit()
