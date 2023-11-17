@@ -13,7 +13,7 @@ from CoolTerm import CoolTermSocket
 # import re
 
 # macOS uncomment next 1
-import subprocess
+# import subprocess
 
 
 def main():
@@ -44,8 +44,8 @@ def main():
 
     # Move focus to CoolTerm
     # macOS uncomment next 1 line below
-    subprocess.run(["osascript", "-e",
-                    'tell application "CoolTerm" to activate'])
+    # subprocess.run(["osascript", "-e",
+    #                 'tell application "CoolTerm" to activate'])
     # end macOS
 
     # Windows uncomment next 6 lines
@@ -56,7 +56,7 @@ def main():
     #         print(f"{w} found, CoolTerm activated")
     #         break
     # end Windows
-
+    s.SetFrontmostWindow(ID, True)
     sys.exit()
 
 
