@@ -57,7 +57,7 @@ def main():
     #         break
     # end Windows
     print(f"{s.SetFrontmostWindow(ID, True)=}")
-    print(f"{s.SetFrontmostWindow(ID, True)=}")
+    time.sleep(.300)
     sys.exit()
 
 
