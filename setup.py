@@ -11,6 +11,7 @@ setup(
         'console_scripts': [
             'ct_conn = CoolTerm.CT_connect:main',
             'ct_disc = CoolTerm.CT_disconnect:main',
+            'ct_actv = CoolTerm.CT_activate:main',
         ],
     },
     # Metadata

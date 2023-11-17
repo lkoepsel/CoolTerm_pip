@@ -56,7 +56,8 @@ def main():
     #         print(f"{w} found, CoolTerm activated")
     #         break
     # end Windows
-    s.SetFrontmostWindow(ID, True)
+    print(f"{s.SetFrontmostWindow(ID, True)=}")
+    print(f"{s.SetFrontmostWindow(ID, True)=}")
     sys.exit()
 
 
