@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='CoolTerm',
-    version='0.7',
+    version='0.75',
     # This tells setuptools to include any directories, and subdirectories,
     # which include an __init__.py file
     packages=find_packages(),
@@ -10,8 +10,8 @@ setup(
     entry_points={
         'console_scripts': [
             'ct_conn = CoolTerm.CT_connect:conn',
-            'ct_disc = CoolTerm.CT_disconnect:main',
-            'ct_actv = CoolTerm.CT_activate:activate',
+            'ct_disc = CoolTerm.CT_disconnect:disc',
+            'ct_actv = CoolTerm.CT_activate:actv',
         ],
     },
     # Metadata

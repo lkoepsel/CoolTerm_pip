@@ -56,7 +56,6 @@ def conn():
     #         print(f"{w} found, CoolTerm activated")
     #         break
     # end Windows
-    s.SetFrontmostWindow(0, True)
+    s.SetFrontmostWindow(ID, True)
     time.sleep(.300)
     s.Close()
-    sys.exit()

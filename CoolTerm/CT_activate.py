@@ -3,14 +3,13 @@
 # Follow comments based on OS, be sure to comment the other
 # OS sections, as in comment out macOS if running on Windows
 
-import sys
 import time
 from CoolTerm import CoolTermSocket
 
 
-s = CoolTermSocket()
-
-def activate():
+def actv():
+    s = CoolTermSocket()
     ID = s.GetFrontmostWindow()
-    s.SetFrontmostWindow(0, True)
-    time.sleep(1)
+    s.SetFrontmostWindow(ID, True)
+    time.sleep(.5)
+    s.Close()

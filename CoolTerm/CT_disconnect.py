@@ -5,7 +5,7 @@ import sys
 from CoolTerm import CoolTermSocket
 
 
-def main():
+def disc():
     s = CoolTermSocket()
 
     # Check if there are any open windows
@@ -21,8 +21,4 @@ def main():
     # Open the serial port
     if not s.Disconnect(ID):
         print(f"Unable to disconnect CoolTerm")
-
-    sys.exit()
-
-
-main()
+    s.Close()

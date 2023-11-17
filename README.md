@@ -29,11 +29,14 @@ Enabling this requires editing *CT_connect.py*.
 ## Connect and Disconnect
 My main scripting requirement is to have my editor, *Sublime Text*, disconnect CoolTerm, upload code then reconnect *CoolTerm*. The tools I use are the following:
 
-### Disconnect
+### Disconnect - `ct_disc`
 To disconnect CoolTerm from the serial port, use `ct_disc` in your scripts.
 
-### Connect
+### Connect - `ct_conn`
 To disconnect CoolTerm from the serial port, use `ct_conn` in your scripts.
+
+### Activate - `ct_actv`
+To activate (move focus to) CoolTerm from another application, use `ct_actv`. This won't connect or disconnect the serial port, it will simply move the cursor to CoolTerm.
 
 ### Sublime Text (ST) Build Automation
 Save this file as *Make AVR_C.sublime-build* using Tools -> Build System -> New Build System in **ST**
