@@ -9,9 +9,9 @@ setup(
     install_requires=[],
     entry_points={
         'console_scripts': [
-            'ct_conn = CoolTerm.CT_connect:main',
+            'ct_conn = CoolTerm.CT_connect:conn',
             'ct_disc = CoolTerm.CT_disconnect:main',
-            'ct_actv = CoolTerm.CT_activate:main',
+            'ct_actv = CoolTerm.CT_activate:activate',
         ],
     },
     # Metadata

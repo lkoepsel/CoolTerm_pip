@@ -8,11 +8,9 @@ import time
 from CoolTerm import CoolTermSocket
 
 
-def main():
-    s = CoolTermSocket()
+s = CoolTermSocket()
+
+def activate():
     ID = s.GetFrontmostWindow()
-    s.SetFrontmostWindow(ID, True)
-    sys.exit()
-
-
-main()
+    s.SetFrontmostWindow(0, True)
+    time.sleep(1)

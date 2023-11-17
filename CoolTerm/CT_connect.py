@@ -16,7 +16,7 @@ from CoolTerm import CoolTermSocket
 # import subprocess
 
 
-def main():
+def conn():
     s = CoolTermSocket()
 
     # Windows uncomment next 2 lines
@@ -56,9 +56,7 @@ def main():
     #         print(f"{w} found, CoolTerm activated")
     #         break
     # end Windows
-    print(f"{s.SetFrontmostWindow(ID, True)=}")
+    s.SetFrontmostWindow(0, True)
     time.sleep(.300)
+    s.Close()
     sys.exit()
-
-
-main()
