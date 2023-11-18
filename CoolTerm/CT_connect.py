@@ -25,7 +25,8 @@ def conn():
 
     # Windows uncomment next 2 lines
     if OS == "Windows":
-        stc = re.compile(r'.*.stc$')
+        stc = re.compile(r'.*.stc')
+        untitled = re.compile(r'.*Untitled.*')
         windows = gw.getAllTitles()
 
     # Check if there are any open windows
@@ -57,12 +58,10 @@ def conn():
     # Windows uncomment next 6 lines
     if OS == "Windows":
         for w in windows:
-            if stc.match(w):
+            if stc.match(w) or untitled.match(w):
                 window = gw.getWindowsWithTitle(w)[0]
                 window.activate()
-                print(f"{w} found, CoolTerm activated")
+                print(f"Window {w} found, CoolTerm activated")
                 break
         # end Windows
-    s.SetFrontmostWindow(ID, True)
-    time.sleep(.300)
     s.Close()
