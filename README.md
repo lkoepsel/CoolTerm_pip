@@ -13,14 +13,8 @@ cd CoolTerm_pip
 # install software
 pip install .
 ```
-### Edits to move focus to *CoolTerm* on exit
-Its desireable to move the focus to *CoolTerm*, once the build system has completed. This allows you to immediately begin interacting with the microcontroller using *CoolTerm*.
-
-Enabling this requires editing *CT_connect.py*. 
-1. Open *CoolTerm -> CT_connect.py* using a programming editor. 
-2. Follow the comments as to which OS you are using. One set of comments is for *macOS* and the other is for *Windows*. 
-3. Uncomment only the python code for **either (not both)** sections based on your OS. And comment out the code for the *"other"* OS, for example, comment out macOS code, if uncommenting the Windows code. 
-4. Once the edits have been made, save the file and run `pip install .` **from the *CoolTerm_pip* root directory.**
+### CoolTerm Activation
+Its desireable to move the focus to *CoolTerm*, once the build system has completed. This allows you to immediately begin interacting with the microcontroller using *CoolTerm*. This program will make the appropriate changes required for activating *CoolTerm* on *macOS* (using *AppleScript*) or on *Windows* (using *pygetwindow*).
 
 # Usage Example
 1. **Make sure you turn on "Enable Remote Control Socket" under "Scripting" in the Preferences**. Otherwise, the error "Could not connect to CoolTerm" will indicate that it there is a problem communicating with CoolTerm.
@@ -34,9 +28,6 @@ To disconnect CoolTerm from the serial port, use `ct_disc` in your scripts.
 
 ### Connect - `ct_conn`
 To disconnect CoolTerm from the serial port, use `ct_conn` in your scripts.
-
-### Activate - `ct_actv`
-To activate (move focus to) CoolTerm from another application, use `ct_actv`. This won't connect or disconnect the serial port, it will simply move the cursor to CoolTerm.
 
 ### Sublime Text (ST) Build Automation
 Save this file as *Make AVR_C.sublime-build* using Tools -> Build System -> New Build System in **ST**
