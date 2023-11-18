@@ -6,22 +6,27 @@
 import sys
 import time
 from CoolTerm import CoolTermSocket
+import platform
 
+OS = platform.system()
 # Windows uncomment next 3
-# import pygetwindow as gw
-# import pyautogui
-# import re
+if OS == "Windows":
+    import pygetwindow as gw
+    # import pyautogui
+    import re
 
 # macOS uncomment next 1
-# import subprocess
+if OS == "Darwin":
+    import subprocess
 
 
 def conn():
     s = CoolTermSocket()
 
     # Windows uncomment next 2 lines
-    # stc = re.compile(r'.*.stc$')
-    # windows = gw.getAllTitles()
+    if OS == "Windows":
+        stc = re.compile(r'.*.stc$')
+        windows = gw.getAllTitles()
 
     # Check if there are any open windows
     count = s.WindowCount()
@@ -44,18 +49,20 @@ def conn():
 
     # Move focus to CoolTerm
     # macOS uncomment next 1 line below
-    # subprocess.run(["osascript", "-e",
-    #                 'tell application "CoolTerm" to activate'])
+    if OS == "Darwin":
+        subprocess.run(["osascript", "-e",
+                        'tell application "CoolTerm" to activate'])
     # end macOS
 
     # Windows uncomment next 6 lines
-    # for w in windows:
-    #     if stc.match(w):
-    #         window = gw.getWindowsWithTitle(w)[0]
-    #         window.activate()
-    #         print(f"{w} found, CoolTerm activated")
-    #         break
-    # end Windows
+    if OS == "Windows":
+        for w in windows:
+            if stc.match(w):
+                window = gw.getWindowsWithTitle(w)[0]
+                window.activate()
+                print(f"{w} found, CoolTerm activated")
+                break
+        # end Windows
     s.SetFrontmostWindow(ID, True)
     time.sleep(.300)
     s.Close()
