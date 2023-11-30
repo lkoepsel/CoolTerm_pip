@@ -1,11 +1,14 @@
 # CoolTerm package for scripting capabilities
 ## Description
-A pip-installable package to provide scripting capability for [CoolTerm](https://freeware.the-meiers.org). By installing via `pip`, one can easily use the scripting capabilities of CoolTerm via *python*.
+A pip-install-able package to provide scripting capability for [CoolTerm](https://freeware.the-meiers.org). By installing via `pip`, one can easily use the scripting capabilities of CoolTerm via *python*.
 
 Its useful to move the focus to *CoolTerm*, once a build system has completed. This scripting enhancement allows you to immediately begin interacting with the microcontroller using *CoolTerm*. The connection script will make the appropriate changes required for activating the *CoolTerm* window on *macOS* (using *AppleScript*) or on *Windows* (using *pygetwindow*).
 
 An example is provided using the build systems in Sublime Text 4.
 
+## Platforms
+I've been able to get this to work well on *macOS* and *Windows*. I have been unsuccessful on *Linux*.
+ 
 ## Installation
 
 ### 1. Clone the repository and install

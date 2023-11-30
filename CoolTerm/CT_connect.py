@@ -9,13 +9,11 @@ from CoolTerm import CoolTermSocket
 import platform
 
 OS = platform.system()
-# Windows uncomment next 3
 if OS == "Windows":
     import pygetwindow as gw
     # import pyautogui
     import re
 
-# macOS uncomment next 1
 if OS == "Darwin":
     import subprocess
 
