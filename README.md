@@ -2,34 +2,26 @@
 ## Description
 A pip-installable package to provide scripting capability for [CoolTerm](https://freeware.the-meiers.org). By installing via `pip`, one can easily use the scripting capabilities of CoolTerm via *python*.
 
-## Install
-### Steps
+Its useful to move the focus to *CoolTerm*, once a build system has completed. This scripting enhancement allows you to immediately begin interacting with the microcontroller using *CoolTerm*. The connection script will make the appropriate changes required for activating the *CoolTerm* window on *macOS* (using *AppleScript*) or on *Windows* (using *pygetwindow*).
+
+An example is provided using the build systems in Sublime Text 4.
+
+## Installation
+
+### 1. Clone the repository and install
 ```bash
-# clone the repository
 git clone git@github.com:lkoepsel/CoolTerm_pip.git
 # change to the directory
 cd CoolTerm_pip
-# edit CT_connect.py based on your OS (see Edits... below)
 # install software
 pip install .
 ```
-### CoolTerm Activation
-Its desireable to move the focus to *CoolTerm*, once the build system has completed. This allows you to immediately begin interacting with the microcontroller using *CoolTerm*. This program will make the appropriate changes required for activating *CoolTerm* on *macOS* (using *AppleScript*) or on *Windows* (using *pygetwindow*).
 
-# Usage Example
-1. **Make sure you turn on "Enable Remote Control Socket" under "Scripting" in the Preferences**. Otherwise, the error "Could not connect to CoolTerm" will indicate that it there is a problem communicating with CoolTerm.
-2. Follow the example scripts contained in the CoolTerm documentation, *CoolTerm -> Scripting -> Python -> Examples*
+### 2. Activate CoolTerm scripting
+To use scripting with CoolTerm, you will need to enable it in Preferences. Go to CoolTerm -> Preferences -> Scripting and check the box `Enable Remote Control Socket`. If on the Mac, be sure to check `Enable AppleScript`. If you see the error *"Could not connect to CoolTerm"*, more than likely it is due to not enabling this preference. 
 
-## Connect and Disconnect
-My main scripting requirement is to have my editor, *Sublime Text*, disconnect CoolTerm, upload code then reconnect *CoolTerm*. The tools I use are the following:
-
-### Disconnect - `ct_disc`
-To disconnect CoolTerm from the serial port, use `ct_disc` in your scripts.
-
-### Connect - `ct_conn`
-To disconnect CoolTerm from the serial port, use `ct_conn` in your scripts.
-
-### Sublime Text (ST) Build Automation
+### 3. Add build automation to Sublime Text 4
+#### AVR_C - automates a `make` commands for building C programs on the Uno (*AVR family*)
 Save this file as *Make AVR_C.sublime-build* using Tools -> Build System -> New Build System in **ST**
 ```json
 {
@@ -57,6 +49,7 @@ Save this file as *Make AVR_C.sublime-build* using Tools -> Build System -> New 
 }
 ```
 
+#### MicroPython - automates uploading a script to a processor running MicroPython
 Save this file as *MicroPython.sublime-build* using Tools -> Build System -> New Build System in **ST**
 ```json
 {
@@ -77,3 +70,19 @@ Save this file as *MicroPython.sublime-build* using Tools -> Build System -> New
 
 }
 ```
+
+## Other Usage Examples
+1. **Make sure you turn on "Enable Remote Control Socket" under "Scripting" in the Preferences**. 
+2. Follow the example scripts contained in the CoolTerm documentation, *CoolTerm -> Scripting -> Python -> Examples*
+
+## Connect and Disconnect Scripting
+My main scripting requirement is to have my editor, *Sublime Text*, disconnect CoolTerm, upload code then reconnect *CoolTerm*. When installed via `pip`, there will be two CLI commands which will disconnect and connect/activate CoolTerm. You can run the commands below in the command line or use them in a script of your design. 
+
+### Disconnect - `ct_disc`
+To disconnect CoolTerm from the serial port, use `ct_disc` in your scripts.
+
+### Connect - `ct_conn`
+To disconnect CoolTerm from the serial port, use `ct_conn` in your scripts.
+
+## Notes
+1. This repository contains the CoolTerm python program, *CoolTerm.py*, which is contained in the CoolTerm application download. It will be updated when CoolTerm is updated.
