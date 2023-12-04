@@ -56,19 +56,18 @@ Save this file as *Make AVR_C.sublime-build* using Tools -> Build System -> New 
 Save this file as *MicroPython.sublime-build* using Tools -> Build System -> New Build System in **ST4**
 ```json
 {
-	"shell_cmd": "echo \" Use main to upload to main.py and same to retain filename\" ",
+	"shell_cmd": "echo \"Both upload a MicroPython program to board, then activate CoolTerm\" ",
 
 	"variants":
 	[
 		{
-			"name": "CoolTerm main",
+			"name": "Copy to main.py and activate CoolTerm",
 			"shell_cmd": "ct_disc && mpremote cp $file :main.py && mpremote reset && ct_conn"
 		},
 		{
-			"name": "CoolTerm same",
+			"name": "Copy to same filename and activate CoolTerm",
 			"shell_cmd": "ct_disc && mpremote cp $file :$file_name && mpremote reset && ct_conn"
 		}
-
 	]
 
 }
