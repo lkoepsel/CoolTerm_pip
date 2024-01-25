@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='CoolTerm',
-    version='0.9',
+    version='1.1.1',
     # This tells setuptools to include any directories, and subdirectories,
     # which include an __init__.py file
     packages=find_packages(),
@@ -12,6 +12,7 @@ setup(
         'console_scripts': [
             'ct_conn = CoolTerm.CT_connect:conn',
             'ct_disc = CoolTerm.CT_disconnect:disc',
+            'mpbuild = CoolTerm.mpbuild:build',
         ],
     },
     # Metadata

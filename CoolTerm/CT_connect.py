@@ -1,7 +1,6 @@
 #!/usr/local/bin/python3
 # Connect CoolTerm to serial port and activate CoolTerm on exit
-# Follow comments based on OS, be sure to comment the other
-# OS sections, as in comment out macOS if running on Windows
+# Uses python platform extension to determine OS
 
 import sys
 import time
@@ -11,7 +10,6 @@ import platform
 OS = platform.system()
 if OS == "Windows":
     import pygetwindow as gw
-    # import pyautogui
     import re
 
 if OS == "Darwin":
@@ -21,7 +19,6 @@ if OS == "Darwin":
 def conn():
     s = CoolTermSocket()
 
-    # Windows uncomment next 2 lines
     if OS == "Windows":
         stc = re.compile(r'.*.stc')
         untitled = re.compile(r'.*Untitled.*')
@@ -47,13 +44,11 @@ def conn():
     print(f"Connected {t / 10} secs")
 
     # Move focus to CoolTerm
-    # macOS uncomment next 1 line below
     if OS == "Darwin":
         subprocess.run(["osascript", "-e",
                         'tell application "CoolTerm" to activate'])
     # end macOS
 
-    # Windows uncomment next 6 lines
     if OS == "Windows":
         for w in windows:
             if stc.match(w) or untitled.match(w):
@@ -61,5 +56,4 @@ def conn():
                 window.activate()
                 print(f"Window {w} found, CoolTerm activated")
                 break
-        # end Windows
     s.Close()
