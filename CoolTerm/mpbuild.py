@@ -7,10 +7,10 @@
 # 1 line starting with '+' will be copied to main.py
 # directory lines must appear prior to the files in the directories
 # all other lines are considered valid files in the current directory
-# PYBOARD_DEVICE environmental variable must be set to board serial port
+# -p port required to set to board serial port
 
 
-import argparse
+import click
 import re
 from CoolTerm.pyboard import Pyboard
 import sys
@@ -44,55 +44,68 @@ main_prog = re.compile(r'^\+')
 change = re.compile(r'^!')
 
 
-def build():
-    parser = argparse.ArgumentParser(description='''Builds an application on a
-        MicroPython board (Board).
-        Uses build file containing names of folders and files to copy files
-        and create folders.
-        Uses local_env.py file to determine Board serial port:
-        port = 'portname'
-        Filenames can NOT have blanks in their names.
-        Board storage must be empty or program exits. ''')
-    parser.add_argument('-p', '--port', type=str, required=True,
-                        help='The port address (e.g., /dev/cu.usbmodem3101).')
-    parser.add_argument('build',
-                        help='build file to use forbuilding application',
-                        default='files.txt')
-    parser.add_argument('-n', "--dry-run", action='store_true', default=False,
-                        dest='dryrun',
-                        help='required to copy the files to the board')
-    parser.add_argument('-v', "--verbose", action='store_true', default=False,
-                        dest='verbose',
-                        help='print lines in build file prior to execution')
+@click.command('build')
+@click.version_option("1.1.3", prog_name="mpbuild")
+@click.option('-p', '--port', required=True, type=str,
+              help='Port address (e.g., /dev/cu.usbmodem3101, COM3).')
+@click.argument('build',
+                type=click.Path(exists=True, readable=True),
+                required=True)
+@click.option('-n', '--dry-run', 'dryrun', is_flag=True, default=False,
+              help='Show commands w/o execution & print file format.')
+@click.option('-v', '--verbose', is_flag=True, default=False,
+              help='Print lines in build file prior to execution.')
+def build(port, build, dryrun, verbose):
+    """
+    Builds an MicroPython application on a board.
+    Uses a text file containing names of folders and files to copy files
+    and create folders, approriately to a board running MicroPython.
+    Requires -p port for serial port: as in -p /dev/cu.usb... or -p COM3
+    Board storage must be empty or program exits.
 
-    args = parser.parse_args()
+    \b
+    * Requires a text file containing the following:
+    * Filenames can NOT have blanks in their names.
+    * lines starting with '\\n *' are comments and ignored
+    * lines starting with '/' are directories and are created
+    * lines starting with '!' are files to be copied and renamed,
+    + 2 fields are required, separated by a ', ', localname, piconame
+    * 1 line starting with '+' will be copied to main.py
+    * directory lines must be prior to the files in the directories
+    * all other lines are valid files in the current directory
+    * -p port required to set to board serial port
+    """
 
+    print(f"Building uP application using {build} file on {port} port")
     disc()
 
-    pyb = Pyboard(args.port, 115200)
+    pyb = Pyboard(port, 115200)
     pyb.enter_raw_repl()
-    with open(args.build, 'r') as files:
+    with open(build, 'r') as files:
         file_list = files.readlines()
 
     dirs = []
     local_files = pyb.fs_listdir("/")
     if len(local_files) != 0:
-        print(f"Flash memory is not empty. Please delete files and try again.")
+        print(f"Flash memory not empty, delete files and try again.")
+        print(f"Files on board are the following: ")
         for file in local_files:
             if file[3] == 0:
+                # directory, don't print size
                 print(f"{file[0]}/")
             else:
-                print(f"{file[0]: 20}\t{file[3]}")
+                # file, print both name and size
+                print(f"{file[0]:>20}\t{file[3]}")
         sys.exit()
 
     for file in file_list:
-        if args.verbose:
+        if verbose:
             print(f"{file.strip()}")
         # line begins with a slash, create a dir using the following text
         if folder.match(file):
             d = file.strip()
             dirs.append(d)
-            if args.dryrun:
+            if dryrun:
                 print(f"pyb.fs_mkdir({d})")
             else:
                 pyb.fs_mkdir(d)
@@ -104,23 +117,25 @@ def build():
         # line begins with a +, copy it to main.py
         elif main_prog.match(file):
             s = file[1:].strip()
-            if args.dryrun:
+            if dryrun:
                 print(f"pyb.fs_put({s}, main.py)")
             else:
-                pyb.fs_put(s, 'main.py', progress_callback=show_progress_bar)
+                pyb.fs_put(
+                    s, 'main.py', progress_callback=show_progress_bar)
 
         # line begins with a +, copy it to main.py
         elif change.match(file):
             s, d = file[1:].split(',')
-            if args.dryrun:
+            if dryrun:
                 print(f"pyb.fs_put({s}, {d.strip()})")
             else:
-                pyb.fs_put(s, d.strip(), progress_callback=show_progress_bar)
+                pyb.fs_put(
+                    s, d.strip(), progress_callback=show_progress_bar)
 
         # all other lines are assumed to be valid files to copy to board
         else:
             s = file.strip()
-            if args.dryrun:
+            if dryrun:
                 print(f"pyb.fs_put({s}, {s})")
             else:
                 pyb.fs_put(s, s, progress_callback=show_progress_bar)
@@ -134,3 +149,7 @@ def build():
     pyb.close()
 
     conn()
+
+
+if __name__ == '__main__':
+    build()
