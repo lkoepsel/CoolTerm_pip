@@ -27,11 +27,11 @@ def show_progress_bar(size, total_size, op="copying"):
         return
     elif size >= total_size:
         # Clear progress bar when copy completes
-        click.echo("\r" + " " * (13 + len(op) + bar_length) + "\r", end="")
+        print("\r" + " " * (13 + len(op) + bar_length) + "\r", end="")
     else:
         bar = size * bar_length // total_size
         progress = size * 100 // total_size
-        click.echo(
+        print(
             "\r ... {} {:3d}% [{}{}]".format
             (op, progress, "#" * bar, "-" * (bar_length - bar)),
             end="",

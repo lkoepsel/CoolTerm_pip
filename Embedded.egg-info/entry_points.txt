@@ -1,4 +1,0 @@
-[console_scripts]
-ct_conn = CoolTerm.CT_connect:conn
-ct_disc = CoolTerm.CT_disconnect:disc
-mpbuild = CoolTerm.mpbuild:build
