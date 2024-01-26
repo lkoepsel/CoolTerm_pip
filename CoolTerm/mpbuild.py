@@ -27,11 +27,11 @@ def show_progress_bar(size, total_size, op="copying"):
         return
     elif size >= total_size:
         # Clear progress bar when copy completes
-        print("\r" + " " * (13 + len(op) + bar_length) + "\r", end="")
+        click.echo("\r" + " " * (13 + len(op) + bar_length) + "\r", end="")
     else:
         bar = size * bar_length // total_size
         progress = size * 100 // total_size
-        print(
+        click.echo(
             "\r ... {} {:3d}% [{}{}]".format
             (op, progress, "#" * bar, "-" * (bar_length - bar)),
             end="",
@@ -76,7 +76,7 @@ def build(port, build, dryrun, verbose):
     * -p port required to set to board serial port
     """
 
-    print(f"Building uP application using {build} file on {port} port")
+    click.echo(f"Building uP application using {build} file on {port} port")
     disc()
 
     pyb = Pyboard(port, 115200)
@@ -87,26 +87,26 @@ def build(port, build, dryrun, verbose):
     dirs = []
     local_files = pyb.fs_listdir("/")
     if len(local_files) != 0:
-        print(f"Flash memory not empty, delete files and try again.")
-        print(f"Files on board are the following: ")
+        click.echo(f"Flash memory not empty, delete files and try again.")
+        click.echo(f"Files on board are the following: ")
         for file in local_files:
             if file[3] == 0:
                 # directory, don't print size
-                print(f"{file[0]}/")
+                click.echo(f"{file[0]}/")
             else:
                 # file, print both name and size
-                print(f"{file[0]:>20}\t{file[3]}")
+                click.echo(f"{file[0]:>20}\t{file[3]}")
         sys.exit()
 
     for file in file_list:
         if verbose:
-            print(f"{file.strip()}")
+            click.echo(f"{file.strip()}")
         # line begins with a slash, create a dir using the following text
         if folder.match(file):
             d = file.strip()
             dirs.append(d)
             if dryrun:
-                print(f"pyb.fs_mkdir({d})")
+                click.echo(f"pyb.fs_mkdir({d})")
             else:
                 pyb.fs_mkdir(d)
 
@@ -118,7 +118,7 @@ def build(port, build, dryrun, verbose):
         elif main_prog.match(file):
             s = file[1:].strip()
             if dryrun:
-                print(f"pyb.fs_put({s}, main.py)")
+                click.echo(f"pyb.fs_put({s}, main.py)")
             else:
                 pyb.fs_put(
                     s, 'main.py', progress_callback=show_progress_bar)
@@ -127,7 +127,7 @@ def build(port, build, dryrun, verbose):
         elif change.match(file):
             s, d = file[1:].split(',')
             if dryrun:
-                print(f"pyb.fs_put({s}, {d.strip()})")
+                click.echo(f"pyb.fs_put({s}, {d.strip()})")
             else:
                 pyb.fs_put(
                     s, d.strip(), progress_callback=show_progress_bar)
@@ -136,14 +136,14 @@ def build(port, build, dryrun, verbose):
         else:
             s = file.strip()
             if dryrun:
-                print(f"pyb.fs_put({s}, {s})")
+                click.echo(f"pyb.fs_put({s}, {s})")
             else:
                 pyb.fs_put(s, s, progress_callback=show_progress_bar)
 
-    print(f"/")
+    click.echo(f"/")
     pyb.fs_ls('/')
     for d in dirs:
-        print(f"{d}/")
+        click.echo(f"{d}/")
         pyb.fs_ls(d)
     pyb.exit_raw_repl()
     pyb.close()
