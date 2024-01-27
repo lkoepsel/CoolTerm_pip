@@ -8,7 +8,7 @@ setup(
     packages=find_packages(),
     install_requires=["pygetwindow>=0.0.9; sys_platform == 'win32'",
                       "pyautogui>=0.9; sys_platform == 'win32'",
-                      "click>=8.0; sys_platform == 'all'"],
+                      "click>=8.0"],
     entry_points={
         'console_scripts': [
             'ct_conn = CoolTerm.CT_connect:conn',
