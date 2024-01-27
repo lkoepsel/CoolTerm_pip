@@ -18,26 +18,6 @@ from CoolTerm.CT_connect import conn
 from CoolTerm.CT_disconnect import disc
 
 
-def show_progress_bar(size, total_size, op="copying"):
-    if not sys.stdout.isatty():
-        return
-    verbose_size = 2048
-    bar_length = 20
-    if total_size < verbose_size:
-        return
-    elif size >= total_size:
-        # Clear progress bar when copy completes
-        print("\r" + " " * (13 + len(op) + bar_length) + "\r", end="")
-    else:
-        bar = size * bar_length // total_size
-        progress = size * 100 // total_size
-        print(
-            "\r ... {} {:3d}% [{}{}]".format
-            (op, progress, "#" * bar, "-" * (bar_length - bar)),
-            end="",
-        )
-
-
 folder = re.compile(r'^/')
 comment = re.compile(r'^#')
 main_prog = re.compile(r'^\+')
@@ -62,6 +42,8 @@ def build(port, build, dryrun, verbose):
     and create folders, approriately to a board running MicroPython.
     Requires -p port for serial port: as in -p /dev/cu.usb... or -p COM3
     Board storage must be empty or program exits.
+
+    Detailed example: https://github.com/lkoepsel/microserver
 
     \b
     * Requires a text file containing the following:
@@ -98,47 +80,48 @@ def build(port, build, dryrun, verbose):
                 click.echo(f"{file[0]:>20}\t{file[3]}")
         sys.exit()
 
-    for file in file_list:
-        if verbose:
-            click.echo(f"{file.strip()}")
-        # line begins with a slash, create a dir using the following text
-        if folder.match(file):
-            d = file.strip()
-            dirs.append(d)
-            if dryrun:
-                click.echo(f"pyb.fs_mkdir({d})")
-            else:
-                pyb.fs_mkdir(d)
+    with click.progressbar(file_list) as progressbar:
+        for file in progressbar:
+            if verbose:
+                click.echo(f"{file.strip()}")
+            # line begins with a slash, create a dir using the following text
+            if folder.match(file):
+                d = file.strip()
+                dirs.append(d)
+                if dryrun:
+                    click.echo(f"pyb.fs_mkdir({d})")
+                else:
+                    pyb.fs_mkdir(d)
 
-        # line begins with a #, ignore the line its a comment
-        elif comment.match(file):
-            continue
+            # line begins with a #, ignore the line its a comment
+            elif comment.match(file):
+                continue
 
-        # line begins with a +, copy it to main.py
-        elif main_prog.match(file):
-            s = file[1:].strip()
-            if dryrun:
-                click.echo(f"pyb.fs_put({s}, main.py)")
-            else:
-                pyb.fs_put(
-                    s, 'main.py', progress_callback=show_progress_bar)
+            # line begins with a +, copy it to main.py
+            elif main_prog.match(file):
+                s = file[1:].strip()
+                if dryrun:
+                    click.echo(f"pyb.fs_put({s}, main.py)")
+                else:
+                    pyb.fs_put(
+                        s, 'main.py')
 
-        # line begins with a +, copy it to main.py
-        elif change.match(file):
-            s, d = file[1:].split(',')
-            if dryrun:
-                click.echo(f"pyb.fs_put({s}, {d.strip()})")
-            else:
-                pyb.fs_put(
-                    s, d.strip(), progress_callback=show_progress_bar)
+            # line begins with a +, copy it to main.py
+            elif change.match(file):
+                s, d = file[1:].split(',')
+                if dryrun:
+                    click.echo(f"pyb.fs_put({s}, {d.strip()})")
+                else:
+                    pyb.fs_put(
+                        s, d.strip())
 
-        # all other lines are assumed to be valid files to copy to board
-        else:
-            s = file.strip()
-            if dryrun:
-                click.echo(f"pyb.fs_put({s}, {s})")
+            # all other lines are assumed to be valid files to copy to board
             else:
-                pyb.fs_put(s, s, progress_callback=show_progress_bar)
+                s = file.strip()
+                if dryrun:
+                    click.echo(f"pyb.fs_put({s}, {s})")
+                else:
+                    pyb.fs_put(s, s)
 
     click.echo(f"/")
     pyb.fs_ls('/')

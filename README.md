@@ -19,6 +19,11 @@ cd CoolTerm_pip
 # install software
 pip install .
 ```
+### OR Install from GitHub
+
+```bash
+pip install git+https://github.com/lkoepsel/CoolTerm_pip#egg=CoolTerm
+```
 
 ### 2. Activate CoolTerm scripting
 To use scripting with CoolTerm, you will need to enable it in Preferences. Go to CoolTerm -> Preferences -> Scripting and check the box `Enable Remote Control Socket`. If on the Mac, be sure to check `Enable AppleScript`. If you see the error *"Could not connect to CoolTerm"*, more than likely it is due to not enabling this preference. 
@@ -56,7 +61,6 @@ Save this file as *Make AVR_C.sublime-build* using Tools -> Build System -> New 
 Save this file as *MicroPython.sublime-build* using Tools -> Build System -> New Build System in **ST4**
 ```json
 {
-	"shell_cmd": "echo \"Both upload a MicroPython program to board, then activate CoolTerm\" ",
 
 	"variants":
 	[
@@ -67,6 +71,10 @@ Save this file as *MicroPython.sublime-build* using Tools -> Build System -> New
 		{
 			"name": "Copy to same filename and activate CoolTerm",
 			"shell_cmd": "ct_disc && mpremote cp $file :$file_name && mpremote reset && ct_conn"
+		},
+		{
+			"name": "Cross compile same filename for upload",
+			"shell_cmd": "mpy-cross-v6.1 -march=armv6m $file"
 		}
 	]
 
@@ -85,6 +93,9 @@ To disconnect CoolTerm from the serial port, use `ct_disc` in your scripts.
 
 ### Connect - `ct_conn`
 To disconnect CoolTerm from the serial port, use `ct_conn` in your scripts.
+
+### Build a MicroPython Application - `mpbuild`
+Use the CLI command to build a MicroPython application, by copying all of the files required for the application to the board. Detailed explanation can be found in my repository [microserver](https://github.com/lkoepsel/microserver)
 
 ## Notes
 1. This repository contains the CoolTerm python program, *CoolTerm.py*, which is contained in the CoolTerm application download. It will be updated when CoolTerm is updated.
