@@ -53,8 +53,10 @@ def build(port, build, dryrun, verbose):
         for p in sorted(serial.tools.list_ports.comports()):
             if p.manufacturer == 'MicroPython':
                 port = p.device
-            else:
-                click.echo("Port not found, please re-run with -p option")
+                break
+        if port is None:
+            click.echo(f"Port not found, please re-run with -p option")
+            sys.exit(1)
 
     click.echo(f"Building uP application using {build} file on {port} port")
 
