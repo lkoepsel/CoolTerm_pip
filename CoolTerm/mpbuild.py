@@ -13,8 +13,18 @@ main_prog = re.compile(r'^\+')
 change = re.compile(r'^!')
 
 
+def check_port(port):
+    if port is None:
+        for p in sorted(serial.tools.list_ports.comports()):
+            if p.manufacturer != 'MicroPython':
+                pass
+            else:
+                return p.device
+    return port
+
+
 @click.command('build')
-@click.version_option("1.5", prog_name="mpbuild")
+@click.version_option("1.5.1", prog_name="mpbuild")
 @click.option('-p', '--port', required=False, type=str,
               help='Port address (e.g., /dev/cu.usbmodem3101, COM3).')
 @click.argument('build',
@@ -48,19 +58,14 @@ def build(port, build, dryrun, verbose):
     """
 
     disc()
+    serial_port = check_port(port)
 
-    if port is None:
-        for p in sorted(serial.tools.list_ports.comports()):
-            if p.manufacturer == 'MicroPython':
-                port = p.device
-                break
-        if port is None:
-            click.echo(f"Port not found, please re-run with -p option")
-            sys.exit(1)
+    if serial_port is None:
+        click.echo(f"Port not found, please re-run with -p option")
+        sys.exit(1)
 
-    click.echo(f"Building uP application using {build} file on {port} port")
-
-    pyb = Pyboard(port, 115200)
+    click.echo(f"Building uP app using {build} file on {serial_port} port")
+    pyb = Pyboard(serial_port, 115200)
     pyb.enter_raw_repl()
     with open(build, 'r') as files:
         file_list = files.readlines()
@@ -76,7 +81,7 @@ def build(port, build, dryrun, verbose):
                 click.echo(f"{file[0]}/")
             else:
                 # file, print both name and size
-                click.echo(f"{file[0]:>20}\t{file[3]}")
+                click.echo(f"{file[0]: >20}\t{file[3]}")
         sys.exit()
 
     with click.progressbar(file_list) as progressbar:
