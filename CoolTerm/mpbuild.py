@@ -1,6 +1,8 @@
 import click
 import re
-from mpremote import Pyboard
+# from mpremote import Pyboard
+# from .transport import TransportError
+from .transport_serial import SerialTransport
 import serial.tools.list_ports
 import sys
 from CoolTerm.CT_connect import conn
@@ -65,13 +67,13 @@ def build(port, build, dryrun, verbose):
         sys.exit(1)
 
     click.echo(f"Building uP app using {build} file on {serial_port} port")
-    pyb = Pyboard(serial_port, 115200)
-    pyb.enter_raw_repl()
+    uPbd = SerialTransport(serial_port, 115200)
+    uPbd.enter_raw_repl()
     with open(build, 'r') as files:
         file_list = files.readlines()
 
     dirs = []
-    local_files = pyb.fs_listdir("/")
+    local_files = uPbd.fs_listdir("/")
     if len(local_files) != 0:
         click.echo(f"Flash memory not empty, delete files and try again.")
         click.echo(f"Files on board are the following: ")
@@ -93,9 +95,9 @@ def build(port, build, dryrun, verbose):
                 d = file.strip()
                 dirs.append(d)
                 if dryrun:
-                    click.echo(f"pyb.fs_mkdir({d})")
+                    click.echo(f"uPbd.fs_mkdir({d})")
                 else:
-                    pyb.fs_mkdir(d)
+                    uPbd.fs_mkdir(d)
 
             # line begins with a #, ignore the line its a comment
             elif comment.match(file):
@@ -105,34 +107,34 @@ def build(port, build, dryrun, verbose):
             elif main_prog.match(file):
                 s = file[1:].strip()
                 if dryrun:
-                    click.echo(f"pyb.fs_put({s}, main.py)")
+                    click.echo(f"uPbd.fs_put({s}, main.py)")
                 else:
-                    pyb.fs_put(
+                    uPbd.fs_put(
                         s, 'main.py')
 
             # line begins with a +, copy it to main.py
             elif change.match(file):
                 s, d = file[1:].split(',')
                 if dryrun:
-                    click.echo(f"pyb.fs_put({s}, {d.strip()})")
+                    click.echo(f"uPbd.fs_put({s}, {d.strip()})")
                 else:
-                    pyb.fs_put(
+                    uPbd.fs_put(
                         s, d.strip())
 
             # all other lines are assumed to be valid files to copy to board
             else:
                 s = file.strip()
                 if dryrun:
-                    click.echo(f"pyb.fs_put({s}, {s})")
+                    click.echo(f"uPbd.fs_put({s}, {s})")
                 else:
-                    pyb.fs_put(s, s)
+                    uPbd.fs_put(s, s)
 
     click.echo(f"/")
-    pyb.fs_ls('/')
+    uPbd.fs_ls('/')
     for d in dirs:
         click.echo(f"{d}/")
-        pyb.fs_ls(d)
-    pyb.exit_raw_repl()
-    pyb.close()
+        uPbd.fs_ls(d)
+    uPbd.exit_raw_repl()
+    uPbd.close()
 
     conn()
