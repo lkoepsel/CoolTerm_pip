@@ -23,7 +23,7 @@ def check_port(port):
                 else:
                     return p.device
         else:
-            if port in serial.tools.list_ports:
+            if port in serial.tools.list_ports.comports():
                 return port
         return None
     except TransportError as er:
@@ -31,7 +31,7 @@ def check_port(port):
 
 
 @click.command('build')
-@click.version_option("1.6.2", prog_name="mpbuild")
+@click.version_option("1.6.4", prog_name="mpbuild")
 @click.option('-p', '--port', required=False, type=str,
               help='Port address (e.g., /dev/cu.usbmodem3101, COM3).')
 @click.argument('build',
