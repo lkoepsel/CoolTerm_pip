@@ -25,6 +25,8 @@ def check_port(port, verbose):
                     click.echo(f"Found {p.device}, not a valid device")
         else:
             if p.device == port and p.manufacturer == 'MicroPython':
+                if verbose:
+                    click.echo(f"-p {p.device}, is a valid device")
                 return port
 
     if verbose:
@@ -33,7 +35,7 @@ def check_port(port, verbose):
 
 
 @click.command('build')
-@click.version_option("1.6.7", prog_name="mpbuild")
+@click.version_option("1.6.9", prog_name="mpbuild")
 @click.option('-p', '--port', required=False, type=str,
               help='Port address (e.g., /dev/cu.usbmodem3101, COM3).')
 @click.argument('build',
