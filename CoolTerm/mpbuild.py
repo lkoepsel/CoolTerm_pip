@@ -17,6 +17,8 @@ def check_port(port, verbose):
     for p in sorted(serial.tools.list_ports.comports()):
         if port is None:
             if p.manufacturer == 'MicroPython':
+                if verbose:
+                    click.echo(f"Found {p.device}, valid device")
                 return p.device
             else:
                 if verbose:
@@ -25,6 +27,8 @@ def check_port(port, verbose):
             if p.device == port and p.manufacturer == 'MicroPython':
                 return port
 
+    if verbose:
+        click.echo(f"No valid serial ports found.")
     return None
 
 
