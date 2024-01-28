@@ -13,13 +13,14 @@ main_prog = re.compile(r'^\+')
 change = re.compile(r'^!')
 
 
-def check_port(port):
+def check_port(port, verbose):
     for p in sorted(serial.tools.list_ports.comports()):
         if port is None:
             if p.manufacturer == 'MicroPython':
                 return p.device
             else:
-                click.echo(f"Found {p.device}, not a valid device")
+                if verbose:
+                    click.echo(f"Found {p.device}, not a valid device")
         else:
             if p.device == port and p.manufacturer == 'MicroPython':
                 return port
@@ -27,23 +28,8 @@ def check_port(port):
     return None
 
 
-# def check_port(port):
-#     if port is None:
-#         for p in sorted(serial.tools.list_ports.comports()):
-#             if p.manufacturer != 'MicroPython':
-#                 click.echo(f"Found {p.device}, not a valid device")
-#             else:
-#                 return p.device
-#     else:
-#         for p in sorted(serial.tools.list_ports.comports()):
-#             if p.device == port and p.manufacturer == 'MicroPython':
-#                 return port
-#             else:
-#                 return None
-
-
 @click.command('build')
-@click.version_option("1.6.6", prog_name="mpbuild")
+@click.version_option("1.6.7", prog_name="mpbuild")
 @click.option('-p', '--port', required=False, type=str,
               help='Port address (e.g., /dev/cu.usbmodem3101, COM3).')
 @click.argument('build',
@@ -51,8 +37,8 @@ def check_port(port):
                 required=True)
 @click.option('-n', '--dry-run', 'dryrun', is_flag=True, default=False,
               help='Show commands w/o execution & print file format.')
-@click.option('-v', '--verbose', is_flag=True, default=False,
-              help='Print lines in build file prior to execution.')
+@click.option('--verbose', is_flag=True, default=False,
+              help='Print actions being performed.')
 def build(port, build, dryrun, verbose):
     """
     Builds an MicroPython application on a board.
@@ -77,7 +63,7 @@ def build(port, build, dryrun, verbose):
     """
 
     disc()
-    serial_port = check_port(port)
+    serial_port = check_port(port, verbose)
     if serial_port is None:
         click.echo("No valid ports found, re-run with -p option")
         sys.exit(1)
