@@ -35,7 +35,7 @@ def check_port(port, verbose):
 
 
 @click.command('build')
-@click.version_option("1.6.10", prog_name="mpbuild")
+@click.version_option("1.6.11", prog_name="mpbuild")
 @click.option('-p', '--port', required=False, type=str,
               help='Port address (e.g., /dev/cu.usbmodem3101, COM3).')
 @click.argument('build',
@@ -84,14 +84,15 @@ def build(port, build, dryrun, verbose):
     local_files = uPbd.fs_listdir("/")
     if len(local_files) != 0:
         click.echo(f"Flash memory not empty, delete files and try again.")
-        click.echo(f"Files on board are the following: ")
-        for file in local_files:
-            if file[3] == 0:
-                # directory, don't print size
-                click.echo(f"{file[0]}/")
-            else:
-                # file, print both name and size
-                click.echo(f"{file[0]: >20}\t{file[3]}")
+        if verbose:
+            click.echo(f"Files on board are the following: ")
+            for file in local_files:
+                if file[3] == 0:
+                    # directory, don't print size
+                    click.echo(f"{file[0]}/")
+                else:
+                    # file, print both name and size
+                    click.echo(f"{file[0]: >20}\t{file[3]}")
         sys.exit()
 
     with click.progressbar(file_list) as progressbar:
