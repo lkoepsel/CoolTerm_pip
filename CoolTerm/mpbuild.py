@@ -1,15 +1,3 @@
-#!/usr/local/bin/python3
-# requires a text file containing the following:
-# lines starting with '#' are comments and ignored
-# lines starting with '/' are directories and are created
-# lines starting with '!' are files to be copied and renamed,
-#   two fields are required, separated by a ',', localname, piconame
-# 1 line starting with '+' will be copied to main.py
-# directory lines must appear prior to the files in the directories
-# all other lines are considered valid files in the current directory
-# -p port required to set to board serial port
-
-
 import click
 import re
 from CoolTerm.pyboard import Pyboard
@@ -25,7 +13,7 @@ change = re.compile(r'^!')
 
 
 @click.command('build')
-@click.version_option("1.1.3", prog_name="mpbuild")
+@click.version_option("1.4", prog_name="mpbuild")
 @click.option('-p', '--port', required=True, type=str,
               help='Port address (e.g., /dev/cu.usbmodem3101, COM3).')
 @click.argument('build',
@@ -132,7 +120,3 @@ def build(port, build, dryrun, verbose):
     pyb.close()
 
     conn()
-
-
-if __name__ == '__main__':
-    build()
