@@ -1,7 +1,5 @@
 import click
 import re
-# from mpremote import Pyboard
-# from .transport import TransportError
 from mpremote.transport_serial import SerialTransport
 import serial.tools.list_ports
 import sys
@@ -19,10 +17,10 @@ def check_port(port):
     if port is None:
         for p in sorted(serial.tools.list_ports.comports()):
             if p.manufacturer != 'MicroPython':
-                pass
+                click.echo(f"Found {p.device}")
             else:
                 return p.device
-    return port
+    return None
 
 
 @click.command('build')
@@ -61,9 +59,8 @@ def build(port, build, dryrun, verbose):
 
     disc()
     serial_port = check_port(port)
-
     if serial_port is None:
-        click.echo(f"Port not found, please re-run with -p option")
+        click.echo("No valid ports found, re-run with -p option")
         sys.exit(1)
 
     click.echo(f"Building uP app using {build} file on {serial_port} port")
