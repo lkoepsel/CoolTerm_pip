@@ -1,7 +1,6 @@
 import click
 import re
 from mpremote.transport_serial import SerialTransport
-from mpremote.transport import TransportError
 import serial.tools.list_ports
 import sys
 from CoolTerm.CT_connect import conn
@@ -15,25 +14,36 @@ change = re.compile(r'^!')
 
 
 def check_port(port):
-    try:
+    for p in sorted(serial.tools.list_ports.comports()):
         if port is None:
-            for p in sorted(serial.tools.list_ports.comports()):
-                if p.manufacturer != 'MicroPython':
-                    click.echo(f"Found {p.device}")
-                else:
-                    return p.device
+            if p.manufacturer == 'MicroPython':
+                return p.device
+            else:
+                click.echo(f"Found {p.device}, not a valid device")
         else:
-            for p in sorted(serial.tools.list_ports.comports()):
-                if p.device == port and p.manufacturer == 'MicroPython':
-                    return port
-                else:
-                    return None
-    except TransportError as er:
-        click.echo(f"{er}")
+            if p.device == port and p.manufacturer == 'MicroPython':
+                return port
+
+    return None
+
+
+# def check_port(port):
+#     if port is None:
+#         for p in sorted(serial.tools.list_ports.comports()):
+#             if p.manufacturer != 'MicroPython':
+#                 click.echo(f"Found {p.device}, not a valid device")
+#             else:
+#                 return p.device
+#     else:
+#         for p in sorted(serial.tools.list_ports.comports()):
+#             if p.device == port and p.manufacturer == 'MicroPython':
+#                 return port
+#             else:
+#                 return None
 
 
 @click.command('build')
-@click.version_option("1.6.5", prog_name="mpbuild")
+@click.version_option("1.6.6", prog_name="mpbuild")
 @click.option('-p', '--port', required=False, type=str,
               help='Port address (e.g., /dev/cu.usbmodem3101, COM3).')
 @click.argument('build',
