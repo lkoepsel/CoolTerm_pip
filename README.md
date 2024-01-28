@@ -80,7 +80,15 @@ Save this file as *MicroPython.sublime-build* using Tools -> Build System -> New
 
 }
 ```
+### Build a MicroPython Application - `mpbuild`
+This repo also installs `mpbuild` which allows you to build an application by creating a text file containing the instructions as to how/where to copy files required for the application. 
 
+Detailed explanation can be found in my repository [microserver](https://github.com/lkoepsel/microserver). In short:
+
+1. Remove all files from board: `mpremote littefs_rp2`
+2. Build application: `mpbuild application.txt`
+
+ 
 ## Other Usage Examples
 1. **Make sure you turn on "Enable Remote Control Socket" under "Scripting" in the Preferences**. 
 2. Follow the example scripts contained in the CoolTerm documentation, *CoolTerm -> Scripting -> Python -> Examples*
@@ -93,9 +101,6 @@ To disconnect CoolTerm from the serial port, use `ct_disc` in your scripts.
 
 ### Connect - `ct_conn`
 To disconnect CoolTerm from the serial port, use `ct_conn` in your scripts.
-
-### Build a MicroPython Application - `mpbuild`
-Use the CLI command to build a MicroPython application, by copying all of the files required for the application to the board. Detailed explanation can be found in my repository [microserver](https://github.com/lkoepsel/microserver)
 
 ## Notes
 1. This repository contains the CoolTerm python program, *CoolTerm.py*, which is contained in the CoolTerm application download. It will be updated when CoolTerm is updated.

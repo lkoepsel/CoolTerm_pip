@@ -1,6 +1,7 @@
 import click
 import re
 from CoolTerm.pyboard import Pyboard
+import serial.tools.list_ports
 import sys
 from CoolTerm.CT_connect import conn
 from CoolTerm.CT_disconnect import disc
@@ -13,8 +14,8 @@ change = re.compile(r'^!')
 
 
 @click.command('build')
-@click.version_option("1.4", prog_name="mpbuild")
-@click.option('-p', '--port', required=True, type=str,
+@click.version_option("1.5", prog_name="mpbuild")
+@click.option('-p', '--port', required=False, type=str,
               help='Port address (e.g., /dev/cu.usbmodem3101, COM3).')
 @click.argument('build',
                 type=click.Path(exists=True, readable=True),
@@ -46,8 +47,16 @@ def build(port, build, dryrun, verbose):
     * -p port required to set to board serial port
     """
 
-    click.echo(f"Building uP application using {build} file on {port} port")
     disc()
+
+    if port is None:
+        for p in sorted(serial.tools.list_ports.comports()):
+            if p.manufacturer == 'MicroPython':
+                port = p.device
+            else:
+                click.echo("Port not found, please re-run with -p option")
+
+    click.echo(f"Building uP application using {build} file on {port} port")
 
     pyb = Pyboard(port, 115200)
     pyb.enter_raw_repl()
