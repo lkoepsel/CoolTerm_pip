@@ -23,7 +23,8 @@ def check_port(port):
                 else:
                     return p.device
         else:
-            return port
+            if port in serial.tools.list_ports:
+                return port
         return None
     except TransportError as er:
         click.echo(f"{er}")
