@@ -2,13 +2,14 @@ from setuptools import setup, find_packages
 
 setup(
     name='CoolTerm',
-    version='1.5.1',
+    version='1.6',
     # This tells setuptools to include any directories, and subdirectories,
     # which include an __init__.py file
     packages=find_packages(),
     install_requires=["pygetwindow>=0.0.9; sys_platform == 'win32'",
                       "pyautogui>=0.9; sys_platform == 'win32'",
-                      "click>=8.0"],
+                      "click>=8.0",
+                      "mpremote>=1.22"],
     entry_points={
         'console_scripts': [
             'ct_conn = CoolTerm.CT_connect:conn',

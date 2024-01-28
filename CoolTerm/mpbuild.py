@@ -1,6 +1,6 @@
 import click
 import re
-from CoolTerm.pyboard import Pyboard
+from mpremote import Pyboard
 import serial.tools.list_ports
 import sys
 from CoolTerm.CT_connect import conn
@@ -24,7 +24,7 @@ def check_port(port):
 
 
 @click.command('build')
-@click.version_option("1.5.1", prog_name="mpbuild")
+@click.version_option("1.6", prog_name="mpbuild")
 @click.option('-p', '--port', required=False, type=str,
               help='Port address (e.g., /dev/cu.usbmodem3101, COM3).')
 @click.argument('build',
