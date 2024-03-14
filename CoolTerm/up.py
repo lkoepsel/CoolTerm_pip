@@ -15,10 +15,10 @@ main_prog = re.compile(r'^\+')
 change = re.compile(r'^!')
 
 
-def xfr(fname, sport, dt):
+def xfr(fname, ser_port, dt):
 
     # check input line regex
-    badline = b'?\r\n'                      # bad line (compilation error)
+    badline = b'?\x15\r\n'                  # bad line (compilation error)
     defined = b'DEFINED\r\n'                # word already defined
     compile = b'COMPILE ONLY\r\n'           # compile only error
     del_marker = b'-'                       # starts with -, delete marker
@@ -30,36 +30,37 @@ def xfr(fname, sport, dt):
 
     try:
         # Wait for a ready response from a warm boot, prior to uploading file
-        resp = warm_ready(sport, dt)
+        resp = warm_ready(ser_port, dt)
         clean_orig = clean_file(fname)
         error_occurred = False
         for n, line in enumerate(clean_orig[0], 1):
             if line == 'empty\n':
-                resp = empty_ready(sport)
+                resp = empty_ready(ser_port)
                 print(f"{resp} response received, uploading", fname)
                 pass
 
             if line == 'flash\n':
-                resp = flash_ready(sport)
+                resp = flash_ready(ser_port)
                 print(f"{resp} response received, uploading", fname)
                 pass
 
             if line == 'eeprom\n':
-                resp = eeprom_ready(sport)
+                resp = eeprom_ready(ser_port)
                 print(f"{resp} response received, uploading", fname)
                 pass
 
             if line == 'ram\n':
-                resp = ram_ready(sport)
+                resp = ram_ready(ser_port)
                 print(f"{resp} response received, uploading", fname)
                 pass
 
             original.append(line)
             lineno += 1
 
-            sport.write(str.encode(line))
+            ser_port.write(str.encode(line))
             n_bytes_sent += len(line)
-            resp = sport.readline()
+            resp = ser_port.readline()
+            print(f"{resp}")
 
             if ((resp.endswith(badline)
                  or resp.endswith(defined)
@@ -78,7 +79,7 @@ def xfr(fname, sport, dt):
         # subtract 1, as index goes from 0 and file counts from 1
         orig_index = lineno - 1
         if (not original[orig_index].endswith('\n')):
-            sport.write(str.encode('\n'))
+            ser_port.write(str.encode('\n'))
             print("Last line, must only be a new line. ")
             print("New line sent to close last word in the file.")
 
@@ -193,23 +194,25 @@ def check_port(port, verbose):
 
 
 @click.command('up')
-@click.version_option("1.9", prog_name="up")
+@click.version_option("1.9.2", prog_name="up")
 @click.option('-p', '--port', required=False, type=str,
               help='Port address (e.g., /dev/cu.usbmodem3101, COM3).')
-@click.argument('build',
+@click.argument('forthfile',
                 type=click.Path(exists=True, readable=True),
                 required=True)
 @click.option('-n', '--nexlinedelays', 'nld', default=0,
-              help='delay in tens of milliseconds per line')
+              help='delay in milliseconds * 10 per line, default is 0')
 @click.option('--verbose', is_flag=True, default=False,
               help='Print actions being performed.')
-def up(port, build, nld, verbose):
+def up(port, forthfile, nld, verbose):
     """
     Builds an FlashForth application on a board.
-    Detailed example: https://github.com/lkoepsel/???
+    Use with Sublime Text build automation
+    https://github.com/lkoepsel/CoolTerm_pip
 
     \b
-    * Requires a text file containing the following:
+    * Requires a text file containing FlashForth words
+    * Use '-n 3' or any variation to delay between lines
     """
 
     disc()
@@ -218,10 +221,10 @@ def up(port, build, nld, verbose):
         click.echo("No valid ports found, re-run with -p option")
         sys.exit(1)
 
-    click.echo(f"Building FF app using {build} file on {serial_port}")
+    click.echo(f"Building FF app using {forthfile} file on {serial_port}")
     ser = serial.Serial(serial_port, 250000, timeout=1)
     t0 = datetime.datetime.now()
-    n = xfr(build, ser, nld)
+    n = xfr(forthfile, ser, nld)
     et = datetime.datetime.now() - t0
     s = int(n[1] / et.total_seconds())
     print(f'\n{n[2]} lines, {et.total_seconds():4.2f} secs, {s} bytes/sec')

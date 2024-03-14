@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='CoolTerm',
-    version='1.9',
+    version='1.9.2',
     # This tells setuptools to include any directories, and subdirectories,
     # which include an __init__.py file
     packages=find_packages(),

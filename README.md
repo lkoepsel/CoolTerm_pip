@@ -56,7 +56,24 @@ Save this file as *Make AVR_C.sublime-build* using Tools -> Build System -> New 
 	]
 }
 ```
+#### FlashForth - automates uploading a file to a board running FlashForth
+```json
+{
 
+	"variants":
+	[
+		{
+			"name": "Send to board (normal speed) and activate CoolTerm",
+			"shell_cmd": "up $file"
+		},
+		{
+			"name": "Send to board (slower speed) and activate CoolTerm",
+			"shell_cmd": "up -n 3 $file"
+		}
+	]
+
+}
+```
 #### MicroPython - automates uploading a script to a processor running MicroPython
 Save this file as *MicroPython.sublime-build* using Tools -> Build System -> New Build System in **ST4**
 ```json
