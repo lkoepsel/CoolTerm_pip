@@ -1,10 +1,10 @@
 # CoolTerm package for scripting capabilities
-A python package to provide scripting capability for [CoolTerm](https://freeware.the-meiers.org) as well as automating other activities (see *mpbuild*) for MicroPython. By installing via `pip`, one can easily use the scripting capabilities of CoolTerm via *python*.
+A python package to provide scripting capability for [CoolTerm](https://freeware.the-meiers.org) as well as automating other activities (see *mpbuild*) for MicroPython and FlashForth. By installing via `pip`, one can easily use the scripting capabilities of CoolTerm via *python*.
 
 ## Description
-Its useful to move the focus to *CoolTerm*, once a automated *build* has been completed. This scripting enhancement allows you to immediately begin interacting with the microcontroller using *CoolTerm*. The connection script will make the appropriate changes required for activating the *CoolTerm* window on *macOS* (using *AppleScript*) or on *Windows* (using *pygetwindow*). 
+Its useful to move the focus to *CoolTerm*, once a automated *build* or *up*load has been completed. This scripting enhancement allows you to immediately begin interacting with the microcontroller using *CoolTerm*. The connection script will make the appropriate changes required for activating the *CoolTerm* window on *macOS* (using *AppleScript*) or on *Windows* (using *pygetwindow*). 
 
-In this particular example, I use the *build system* on *Sublime Text 4* (**ST4**).
+In this example, I use the *build system* on *Sublime Text 4* (**ST4**).
 
 ## Platforms
 I've been able to get this to work well on *macOS* and *Windows*. I have been unsuccessful on *Linux*.

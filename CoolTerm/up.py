@@ -60,7 +60,6 @@ def xfr(fname, ser_port, dt):
             ser_port.write(str.encode(line))
             n_bytes_sent += len(line)
             resp = ser_port.readline()
-            print(f"{resp}")
 
             if ((resp.endswith(badline)
                  or resp.endswith(defined)
@@ -185,26 +184,24 @@ def ram_ready(c):
     return("ram")
 
 
-def check_port(port, verbose):
+def check_port():
     for p in sorted(serial.tools.list_ports.comports()):
-        if 'usbmodem' in p.device:
+        if ('usbmodem' in p.device) or ('COM' in p.device):
             return(p.device)
     click.echo("No valid serial ports found.")
     return None
 
 
 @click.command('up')
-@click.version_option("1.9.2", prog_name="up")
-@click.option('-p', '--port', required=False, type=str,
+@click.version_option("1.9.5", prog_name="up")
+@click.option('-p', '--port', 'port', required=False, type=str, default='TBD',
               help='Port address (e.g., /dev/cu.usbmodem3101, COM3).')
 @click.argument('forthfile',
                 type=click.Path(exists=True, readable=True),
                 required=True)
 @click.option('-n', '--nexlinedelays', 'nld', default=0,
               help='delay in milliseconds * 10 per line, default is 0')
-@click.option('--verbose', is_flag=True, default=False,
-              help='Print actions being performed.')
-def up(port, forthfile, nld, verbose):
+def up(port, forthfile, nld):
     """
     Builds an FlashForth application on a board.
     Use with Sublime Text build automation
@@ -212,17 +209,19 @@ def up(port, forthfile, nld, verbose):
 
     \b
     * Requires a text file containing FlashForth words
-    * Use '-n 3' or any variation to delay between lines
+    * Use '-n 3' or any variation to delay between lines, use if upload has
+    errors uploading due to transfer speed
     """
 
     disc()
-    serial_port = check_port(port, verbose)
-    if serial_port is None:
-        click.echo("No valid ports found, re-run with -p option")
-        sys.exit(1)
+    if port == 'TBD':
+        port = check_port()
+        if port is None:
+            click.echo("No valid ports found, re-run with -p option")
+            sys.exit(1)
 
-    click.echo(f"Building FF app using {forthfile} file on {serial_port}")
-    ser = serial.Serial(serial_port, 250000, timeout=1)
+    click.echo(f"Building FF app using {forthfile} file on {port}")
+    ser = serial.Serial(port, 250000, timeout=1)
     t0 = datetime.datetime.now()
     n = xfr(forthfile, ser, nld)
     et = datetime.datetime.now() - t0
